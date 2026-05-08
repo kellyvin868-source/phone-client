@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+*{
+      font-family: "Outfit", sans-serif;
+}
+
+@import "tailwindcss";
+a.active{
+    color: red;
+}
+@media(max-width:640px){
+    a.active{
+        background-color: rgba(0, 0, 255, 0.563);
+    }
+}
+
+.fade{
+    animation: fadein .5s linear;
+
+}
+@keyframes fadein{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+.formfade {
+    animation: fadeup .4s linear;
+}
+ @keyframes fadeup{
+    from{
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+ }
+
+ 
