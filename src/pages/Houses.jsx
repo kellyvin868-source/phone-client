@@ -63,7 +63,7 @@ const Houses = () => {
                   <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
                 {
                     phone.map((item,index)=>(
-                        <HouseProduct key={index} id={item._id} image={item.image}  name={item.name}/>
+                        <HouseProduct key={index} id={item._id} image={item.image[0]}  name={item.name}/>
                     ))
                 }
 

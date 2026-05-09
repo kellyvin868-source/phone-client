@@ -7,6 +7,7 @@ import { assests } from "../assets/asset";
 const HouseDetails = () => {
   const { phones, currency, isLogin} = useContext(HouseContext);
   const [form, setForm] = useState(false);
+  const[image,setImage]=useState('');
   const { id } = useParams();
   const [service, setService] = useState("");
   const [allhouses, setAlLHouses] = useState([]);
@@ -25,19 +26,36 @@ const HouseDetails = () => {
   const Navigate = useNavigate();
   useEffect(() => {
     setAlLHouses(phones.filter((item) => item._id == id));
+  
   }, [id]);
-  console.log(service);
+
+  useEffect(()=>{
+      setImage(allhouses.map((item)=>{
+      return item.image[0]
+    }))
+
+  },[allhouses])
 
   return (
     <div className="sm:mt-20 relative z-0  mt-15 fade">
       <div className="flex flex-col sm:flex-row gap-5">
         {allhouses.map((item, index) => (
           <div
-            className="grid grid-cols-1 sm:grid-cols-2 gap-5 space-x-6 "
+            className="grid grid-cols-1 sm:grid-cols-3 gap-5 gap-y-4 space-x-6 "
             key={index}
           >
+            <div className="flex  sm:flex-col flex-row gap-2">
+              {
+                item.image.map((item,index)=>(
+                  <div onClick={()=>setImage(item)} className="p-2 cursor-pointer  bg-white shadow rounded-lg w-full flex items-center justify-center"  key={index}>
+                  <img  className=" sm:h-9 object-contain h-20 shadow " src={item} alt="" />
+                  </div>
+                ))
+              }
+              
+            </div>
             <div className="w-full overflow-hidden">
-              <img className="w-full sm:w-full" src={item.image} alt="" />
+              <img className="w-full h-full object-contain sm:w-full" src={image} alt="" />
             </div>
             <div className="flex flex-col gap-1 text-gray-800">
               <h2 className="font-semibold capitalize text-xl">

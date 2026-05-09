@@ -23,7 +23,7 @@ useEffect(()=>{
                      <div className='grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 space-x-6 gap-2'>
             {
                 vacancy.map((item,index)=>(
-                  <HouseProduct key={index} id={item._id} name={item.name}  image={item.image}/>
+                  <HouseProduct key={index} id={item._id} name={item.name}  image={item.image[0]}/>
                 ))
             }
 
