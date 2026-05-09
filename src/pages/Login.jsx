@@ -113,7 +113,7 @@ const Login = () => {
                 <label className='font-semibold text-xl sm:text-sm' htmlFor="pass">Password:</label>
                 <input onChange={(e)=>setPassword(e.target.value)} value={password} className='w-full px-3 py-2 border border-gray-100 rounded-lg outline-none focus:border-orange-500' type="password" placeholder='Enter a strong password' required id='pass' />
               </div>
-              <p onClick={()=>Navigate('/reset-pass')} className='text-sm font-semibold hover:underline cursor-pointer'>Forgot password?</p>
+              <p className='text-sm font-semibold hover:underline cursor-pointer'>Forgot password?</p>
               <button type='submit' className='w-full px-4 py-2 bg-indigo-700  rounded-lg font-semibold text-xl text-white cursor-pointer focus:bg-indigo-600'>{state==='log'?'Login':'Register'}</button>
               {
                 state==='log'?<span onClick={()=>setState('reg')} className='text-sm font-semibold cursor-pointer'>Don't have an account?Register</span>:<span onClick={()=>setState('log')} className='text-sm cursor-pointer font-semibold'>Already have an account?Login</span>

@@ -12,7 +12,6 @@ import Footer from './components/Footer'
 import Login from './pages/Login'
 import { Loader } from 'lucide-react'
 import Bot from './pages/Bot'
-import ResetPass from './pages/resetPass'
 import Admin from './pages/Admin'
 import Lom from './pages/Lom'
 import {Outlet} from 'react-router-dom'
@@ -52,7 +51,6 @@ const App = () => {
         <Route path='/phone/:id' element={<HouseDetails/>}/>
         <Route path='/about' element={<About/>}/>
         <Route path='bookings' element={<Bookings/>}/>
-        <Route path='/reset-pass' element={<ResetPass/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route  path='/admin' element={<Admin/>}/>
         <Route path='*' element={<NotFound/>}/>
