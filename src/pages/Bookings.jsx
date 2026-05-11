@@ -131,6 +131,7 @@ const Bookings = ({token}) => {
 
   ):(
     <div  className='w-full opacity-0 text-2xl text-center mt-30'>
+      <h2 className='text-2xl font-semibold'>No bookings at the moment,please make some bookings</h2>
 
     </div>
   )
