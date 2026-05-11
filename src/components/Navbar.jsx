@@ -25,9 +25,7 @@ const [toggle,setToggle]=useState(false);
                 <div className=''>
                   <div className='relative group'>
                     <div className='bg-blue-700  w-9 h-9 items-center text-center justify-center flex text-2xl font-semibold  text-white cursor-pointer rounded-full'>
-                      {
-                        userData.name[0].toUpperCase()
-                      }
+                    K
                     </div>
 
                       <div className='hidden absolute bg-gray-400 w-24 p-2 rounded-2xl shadow group-hover:block  dropdown-menu'>
