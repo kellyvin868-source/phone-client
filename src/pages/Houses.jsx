@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { HouseContext } from '../assets/context/HouseContext'
 import HouseProduct from '../components/HouseProduct';
+import Search from '../components/Search';
 
 const Houses = () => {
     const{phones,currency,url}=useContext(HouseContext);
@@ -41,6 +42,7 @@ const Houses = () => {
 
   return (
     <div className='sm:mt-20 fade mt-14'>
+        <Search setPhone={setPhone}/>
         <div className='flex flex-col justify-between sm:flex-row gap-2'>
             <div>
                 <h2 className='font-semibold text-2xl'>Filter By Deposit</h2>

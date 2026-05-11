@@ -13,33 +13,35 @@ const GlobalContext = ({ children }) => {
   const [phones, setPhones] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [userData, setUserData] = useState({});
-  console.log(url);
+
+ // useEffect(()=>{
+   // setPhones(allphones);
+
+ // },[])
 
   const fetchAllPhones = async () => {
-    let result;
+   let result;
     try {
       setLoader(true);
-      const res = await fetch(`${url}/api/product/get`, {
-        method: "GET",
+    const res = await fetch(`${url}/api/product/get`, {
+       method: "GET",
        credentials: "include",
-     })
+      });
 
       result = await res.json();
-     if (res.ok) {
-        console.log(result.data);
-        setPhones(result.data);
-        
-     } else {
-        toast.error("Something went wrong,,please try again later");
+    if (res.ok) {
+      setPhones(result.data);
+      } else {
+       toast.error("Something went wrong,,please try again later");
      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoader(false);
+   } catch (error) {
+     console.log(error);
+   } finally {
+     setLoader(false);
     }
-  };
+ };
 
-  useEffect(() => {
+ useEffect(() => {
     fetchAllPhones();
   }, [url]);
   const value = {
@@ -51,28 +53,21 @@ const GlobalContext = ({ children }) => {
     setIsLogin,
     userData,
     setUserData,
-    fetchAllPhones,
-    setLoader
+    setLoader,
   };
 
   return (
     <HouseContext.Provider value={value}>
-        {
-            loader?(
-                  <div className="bg-white w-full flex-col min-h-screen flex items-center justify-center">
-              <Loader className="w-5 animate-spin" />
-              <div>
-                  <h2 className="text-2xl animate-pulse font-semibold">Loading..</h2>
-
-              </div>
-               
-              </div>
-
-            ):(
-                children
-            )
-        }
-
+      {loader ? (
+        <div className="bg-white w-full flex-col min-h-screen flex items-center justify-center">
+          <Loader className="w-5 animate-spin" />
+          <div>
+            <h2 className="text-2xl animate-pulse font-semibold">Loading..</h2>
+          </div>
+        </div>
+      ) : (
+        children
+      )}
     </HouseContext.Provider>
   );
 };

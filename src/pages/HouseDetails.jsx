@@ -4,16 +4,70 @@ import { HouseContext } from "../assets/context/HouseContext";
 import { toast } from "react-toastify";
 import { assests } from "../assets/asset";
 
-const HouseDetails = () => {
-  const { phones, currency, isLogin} = useContext(HouseContext);
+
+
+const HouseDetails = ({token}) => {
+  const[loading,setLoading]=useState(false);
+  const[phone,setPhone]=useState('');
+  const [address,setAddress]=useState('');
+  const[paymentMethod,setPaymentMethod]=useState('');
+
+  const { phones, currency, isLogin,url} = useContext(HouseContext);
   const [form, setForm] = useState(false);
   const[image,setImage]=useState('');
-  const { id } = useParams();
+  const { productId } = useParams();
   const [service, setService] = useState("");
   const [allhouses, setAlLHouses] = useState([]);
+   const Navigate = useNavigate();
+   const[id,setId]=useState('');
+
+     useEffect(()=>{
+    const main=allhouses.map((item)=>{
+      return item._id;
+    });
+    setId(main);
+
+   },[allhouses])
+  
+
+  
+
+  async function HandlePhoneBooking(e){
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const res=await fetch(`${url}/api/book/${id}`,{
+        method:'POST',
+        headers:{
+          "Content-Type":"application/json",
+          "authorization":`Bearer ${token}`
+        },
+        credentials:"include",
+        body:JSON.stringify({phone,address,paymentMethod})
+      })
+      const result=await res.json();
+      if(res.ok){
+        toast.success(result.message);
+        console.log(result);
+        setForm(false);
+        setTimeout(() => {
+          Navigate('/bookings');
+        }, 1500);
+      }else{
+        toast.error(result.message)
+      }
+      
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message)
+      
+    }finally{
+      setLoading(false);
+    }
+  }
   function handleWhatsappOrder(item){
     const url="https://wa.me//254114895068"
-   const message=`Hello,I'm intersted in the purchase of: 
+   const message=`Hello,I'm interested in the purchase of: 
    Phone Name:${item.name},
    Phone Deposit:${item.deposit}
    `
@@ -23,11 +77,11 @@ const HouseDetails = () => {
   
   
   }
-  const Navigate = useNavigate();
+ 
   useEffect(() => {
-    setAlLHouses(phones.filter((item) => item._id == id));
+    setAlLHouses(phones.filter((item) => item._id == productId));
   
-  }, [id]);
+  }, [productId]);
 
   useEffect(()=>{
       setImage(allhouses.map((item)=>{
@@ -37,137 +91,147 @@ const HouseDetails = () => {
   },[allhouses])
 
   return (
-    <div className="sm:mt-20 relative z-0  mt-15 fade">
-      <div className="flex flex-col sm:flex-row gap-5">
+    <div className="sm:mt-20 relative z-0 mt-16 fade py-8">
+      <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
         {allhouses.map((item, index) => (
           <div
-            className="grid grid-cols-1 sm:grid-cols-3 gap-5 gap-y-4 space-x-6 "
+            className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full"
             key={index}
           >
-            <div className="flex  sm:flex-col flex-row gap-2">
-              {
-                item.image.map((item,index)=>(
-                  <div onClick={()=>setImage(item)} className="p-2 cursor-pointer  bg-white shadow rounded-lg w-full flex items-center justify-center"  key={index}>
-                  <img  className=" sm:h-9 object-contain h-20 shadow " src={item} alt="" />
-                  </div>
-                ))
-              }
-              
+            {/* Image Gallery */}
+            <div className="flex flex-col lg:flex-row gap-4 lg:col-span-2">
+              <div className="flex lg:flex-col gap-2 order-2 lg:order-1">
+                {
+                  item.image.map((imgItem,imgIndex)=>(
+                    <div onClick={()=>setImage(imgItem)} className="p-3 cursor-pointer bg-gray-100 hover:bg-gray-200 shadow rounded-xl w-full lg:w-20 flex items-center justify-center transition-all transform hover:scale-105"  key={imgIndex}>
+                    <img className="h-16 object-contain" src={imgItem} alt="thumbnail" />
+                    </div>
+                  ))
+                }
+              </div>
+              <div className="w-full lg:flex-1 overflow-hidden order-1 lg:order-2 bg-gray-50 rounded-2xl flex items-center justify-center min-h-80">
+                <img className="w-full h-full object-contain p-6" src={image} alt="main" />
+              </div>
             </div>
-            <div className="w-full overflow-hidden">
-              <img className="w-full h-full object-contain sm:w-full" src={image} alt="" />
-            </div>
-            <div className="flex flex-col gap-1 text-gray-800">
-              <h2 className="font-semibold capitalize text-xl">
-                Name: {item.name}
-              </h2>
-              <h4 className="text-sm font-semibold capitalize">
-                Description: {item.desc}
-              </h4>
-              <p className="text-sm font-semibold italic">
-                Version: {item.androidversion}
-              </p>
-              <p  className="mt-2 text-sm capitalize font-semibold">Storage:{item.storage}</p>
-              <p  className="mt-2 text-sm capitalize font-semibold">Camera:{item.camera}</p>
-              <p  className="mt-2 text-sm capitalize font-semibold">Battery:{item.battery}</p>
-              <p  className="mt-2 text-sm font-semibold capitalize">Sim:{item.sim}</p>
-              <p className="mt-2 text-xl font-semibold">
-                Deposit: {currency} {item.deposit}
-              </p>
+
+            {/* Product Details */}
+            <div className="flex flex-col gap-6 bg-white p-6 rounded-2xl shadow-lg">
               <div>
+                <h2 className="font-black text-3xl text-gray-900 mb-2">
+                  {item.name}
+                </h2>
+                <p className="text-gray-600 text-base leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+
+              <div className="border-t pt-6 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-gray-500 font-semibold text-sm uppercase">Storage</p>
+                    <p className="text-gray-900 font-bold text-lg">{item.storage}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 font-semibold text-sm uppercase">Version</p>
+                    <p className="text-gray-900 font-bold text-lg">{item.androidversion}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 font-semibold text-sm uppercase">Camera</p>
+                    <p className="text-gray-900 font-bold text-lg">{item.camera}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 font-semibold text-sm uppercase">Battery</p>
+                    <p className="text-gray-900 font-bold text-lg">{item.battery}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 font-semibold text-sm uppercase">SIM</p>
+                    <p className="text-gray-900 font-bold text-lg">{item.sim}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 font-semibold text-sm uppercase">Screen</p>
+                    <p className="text-gray-900 font-bold text-lg">{item.screen}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="border-t pt-6">
+                <p className="text-gray-500 font-semibold text-sm uppercase mb-1">Deposit Price</p>
+                <p className="text-4xl font-black text-indigo-600">
+                  {currency} {item.deposit}
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="border-t pt-6 space-y-3">
                 <button
-                  onClick={() => setForm(true)}
-                  className="bg-gray-700 active:bg-green-600 text-white px-4 py-2 rounded-lg border-none outline-none font-semibold text-xl cursor-pointer mt-5"
+                  onClick={()=>setForm(true)}
+                  className="w-full bg-linear-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white px-6 py-4 rounded-xl border-none outline-none font-bold text-lg cursor-pointer transition-all hover:shadow-lg transform hover:scale-105"
                 >
-                  Order Now?
+                 Book This Phone
                 </button>
-                <div onClick={()=>handleWhatsappOrder(item)} className="flex mt-3 items-center  cursor-pointer">
-                  <img className="w-10" src={assests.whatsapp} alt="" />
-                  <span className="capitalize text-sm text-gray-800">Order Via whatsapp</span>
+                <div onClick={()=>handleWhatsappOrder(item)} className="w-full bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-4 rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-all hover:shadow-lg transform hover:scale-105">
+                  <img className="w-6 h-6" src={assests.whatsapp} alt="whatsapp" />
+                  <span className="font-bold text-lg">Order Via WhatsApp</span>
                 </div>
               </div>
             </div>
 
+            {/* Order Modal */}
             {form && (
-              <div className=" bg-opacity-50 absolute bg-black/80 overflow-hidden min-h-screen w-full z-50 rounded-lg inset-0 flex items-center justify-center ">
-                <div className="bg-white fade  relative sm:w-md w-[95%] m-auto rounded-lg p-10 shadow-lg">
+              <div className="fixed bg-black/70 overflow-hidden inset-0 z-50 rounded-lg flex items-center justify-center p-4">
+                <div className="bg-white fade relative w-full sm:w-96 rounded-2xl p-8 shadow-2xl max-h-screen overflow-y-auto">
                   <p
                     onClick={() => setForm(false)}
-                    className="text-4xl absolute top-1 right-3 cursor-pointer hover:-translate-y-2 transition-all"
+                    className="text-4xl absolute top-2 right-4 cursor-pointer hover:text-red-500 transition-colors font-bold"
                   >
                     &times;
                   </p>
-                  <form className="flex flex-col gap-2" action="">
+                  <h3 className="text-2xl font-black text-gray-900 mb-6">Complete Your Order</h3>
+                  <form onSubmit={HandlePhoneBooking} className="flex flex-col gap-5">
                     <div>
-                      <label className="font-semibold text-xl" htmlFor="Name">
-                        Name:
-                      </label>
-                      <input
-                        className="w-full py-2 px-3 rounded-lg border border-gray-700 outline-none focus:border-orange-600"
-                        type="text"
-                        name="name"
-                        id="name"
-                        placeholder="Enter your full name"
-                      />
-                    </div>
-                    <div>
-                      <label className="font-semibold text-xl" htmlFor="phone">
-                        Tel:
-                      </label>
-                      <input
-                        className="w-full py-2 px-3 rounded-lg border border-gray-700 outline-none focus:border-orange-600"
-                        type="number"
+                      <label className="font-bold text-base text-gray-700 block mb-2">Phone Number *</label>
+                      <input onChange={(e)=>setPhone(e.target.value)}
+                        className="w-full py-3 px-4 rounded-xl border-2 border-gray-300 outline-none focus:border-indigo-600 text-base font-semibold transition-colors"
+                        type="tel"
                         min={0}
-                        placeholder="+254115477"
+                        placeholder="+254712345678"
                         required
                       />
                     </div>
+                   
                     <div>
-                      <label className="font-semibold text-xl" htmlFor="email">
-                        Email:
-                      </label>
+                      <label className="font-bold text-base text-gray-700 block mb-2">Phone Model</label>
                       <input
-                        className="w-full py-2 px-3 rounded-lg border border-gray-700 outline-none focus:border-orange-600"
-                        type="email"
-                        id="email"
-                        required
-                        name="email"
-                        placeholder="Email Id"
-                      />
-                    </div>
-                    <div>
-                      <label className="font-semibold text-xl" htmlFor="serv">
-                        Service:
-                      </label>
-                      <input
-                        className="w-full py-2 px-3 rounded-lg border border-gray-700 outline-none focus:border-orange-600"
+                        className="w-full py-3 px-4 rounded-xl border-2 border-gray-300 outline-none focus:border-indigo-600 text-base font-semibold transition-colors bg-gray-100"
                         type="text"
                         value={item.name}
-                        onChange={(e) => setService(e.target.value)}
+                        disabled
                       />
                     </div>
                     <div>
-                      <label htmlFor="time">Time:</label>
+                      <label htmlFor="add">Address:</label>
+                      <textarea onChange={(e)=>setAddress(e.target.value)} className="w-full py-3 px-4 rounded-xl border-2 border-gray-300 outline-none focus:border-indigo-600 text-base font-semibold transition-colors bg-gray-100" rows={4} id="add"></textarea>
                     </div>
-
                     <div>
-                      <h4 className="text-xl font-semibold">Payment Method</h4>
-                      <select
-                        className="w-full py-2 px-3 rounded-lg border border-gray-700 outline-none focus:border-orange-600"
-                        name=""
-                        id=""
+                      <label className="font-bold text-base text-gray-700 block mb-2">Payment Method *</label>
+                      <select onChange={(e)=>setPaymentMethod(e.target.value)}
+                        className="w-full py-3 px-4 rounded-xl border-2 border-gray-300 outline-none focus:border-indigo-600 text-base font-semibold transition-colors"
+                        required
                       >
-                        <option value="">Choose Payment Method</option>
-                        <option value="mpesa">Lipa Na Mpesa</option>
-                        <option value="pod">Pay On Delivery</option>
+                        <option value="">Select Payment Method</option>
+                        <option value="mpesa">Lipa Na M-Pesa</option>
+                        <option value="cod">Pay On Delivery</option>
                       </select>
                     </div>
 
                     <button
-                      className="w-full bg-blue-700 px-3 py-2 rounded-lg cursor-pointer text-xl font-semibold text-white transition-all hover:bg-blue-500"
+                      className="w-full bg-linear-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white px-6 py-4 rounded-xl cursor-pointer text-lg font-bold transition-all hover:shadow-lg transform hover:scale-105"
                       type="submit"
                     >
-                      Submit
+                     {
+                      loading?"Processing...":" Complete Booking"
+                     }
                     </button>
                   </form>
                 </div>
