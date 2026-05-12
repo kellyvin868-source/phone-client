@@ -60,7 +60,7 @@ const App = () => {
   useEffect(()=>{
     fetchUserData();
 
-  },[userData])
+  },[])
   const Location=useLocation();
   const main=Location.pathname;
   const[loading,setLoading]=useState(true);

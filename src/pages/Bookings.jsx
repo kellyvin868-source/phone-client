@@ -29,7 +29,6 @@ const Bookings = ({token}) => {
       const result=await res.json();
       if(res.ok){
         setBookingData(result.bookings);
-        console.log(result.bookings)
       }else{
         console.log(result.message);
       }

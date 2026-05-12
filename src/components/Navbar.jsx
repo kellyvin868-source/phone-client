@@ -13,11 +13,6 @@ const [toggle,setToggle]=useState(false);
              <Phone className='w-7 h-7 text-indigo-600'/>
             <p className='text-2xl sm:text-3xl font-bold'>Timothy<span className='text-indigo-600 font-black'>Phones</span></p>
         </div>
-        <div className='sm:hidden'>
-          {
-            userData.name
-          }
-        </div>
         <div className=' hidden sm:flex items-center text-gray-700 gap-8'>
             <NavLink className={'capitalize font-semibold text-base hover:text-indigo-600 transition-colors'} to='/collection'>Collections</NavLink>
              <NavLink  className={'capitalize font-semibold text-base hover:text-indigo-600 transition-colors'} to='/bookings'>Bookings</NavLink>
